@@ -1,15 +1,16 @@
 import * as THREE from "three"
+import * as d3 from "d3"
 import { OrbitControls } from 'OrbitControls'; // importation de l'addon Orbit Controls pour la gestion de la caméra
-import { TrackballControls } from 'TrackballControls'; // importation de l'addon Orbit Controls pour la gestion de la caméra
-import { FlyControls } from 'FlyControls';
-import { FirstPersonControls } from 'FirstPersonControls';
 
 // BASIC SETUP
+const width = 100
+const height = 100
+const nbVertices = 10
 
 // définition de la scene et de la caméra
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1100000);
-camera.position.y = 5
+camera.position.y = 5   
 const renderer = new THREE.WebGLRenderer();
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap
@@ -21,11 +22,21 @@ scene.add(new THREE.AmbientLight(0xd2b48c, 5))
 const controls = new OrbitControls(camera, renderer.domElement);
 scene.add(camera)
 
+// FUCTIONS
+// ---------------------------------------------------------------
 
+var vertices = d3.range(100).map(function(d) {
+    return [Math.random() * width, Math.random() * height];
+});
 
+// console.log(vertices);
 
+var delaunay = d3.Delaunay.from(vertices);
+const voronoi = delaunay.voronoi();
 
+const polygons = Array.from(voronoi.cellPolygons());
 
+console.log(polygons);
 
 
 
