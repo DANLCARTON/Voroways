@@ -29,16 +29,37 @@ var vertices = d3.range(100).map(function(d) {
     return [Math.random() * width, Math.random() * height];
 });
 
-// console.log(vertices);
-
 var delaunay = d3.Delaunay.from(vertices);
 const voronoi = delaunay.voronoi();
-
 const polygons = Array.from(voronoi.cellPolygons());
 
-console.log(polygons);
+// console.log(polygons);
+
+let mat = new THREE.LineBasicMaterial()
+polygons.map(poly => {
+    let points = []
+    poly.map(ver => {
+        console.log(ver[0])
+        points.push(new THREE.Vector3(ver[0], 0, ver[1]))
+    })
+    console.log(points)
+    const geometry = new THREE.BufferGeometry().setFromPoints( points );
+    const line = new THREE.Line( geometry, mat );
+
+    scene.add(line)
+})
 
 
+// geom.vertices.push(v1);
+// geom.vertices.push(v2);
+// geom.vertices.push(v3);
+
+// geom.faces.push( new THREE.Face3( 0, 1, 2 ) );
+// geom.computeFaceNormals();
+
+// var object = new THREE.Mesh( geom, new THREE.MeshNormalMaterial() );
+
+// scene.add(object);
 
 // ACTUAL CODE
 // ----------------------------------------------------------------
