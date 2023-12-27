@@ -10,7 +10,7 @@ const nbVertices = 10
 // définition de la scene et de la caméra
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1100000);
-camera.position.y = 5   
+camera.position.y = 5
 const renderer = new THREE.WebGLRenderer();
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap
@@ -22,15 +22,22 @@ scene.add(new THREE.AmbientLight(0xd2b48c, 5))
 const controls = new OrbitControls(camera, renderer.domElement);
 scene.add(camera)
 
+
+
 // FUCTIONS
 // ---------------------------------------------------------------
 
 var vertices = d3.range(100).map(function(d) {
-    return [Math.random() * width, Math.random() * height];
+    const angle = Math.random() * Math.PI * 2;
+    const radius = Math.random() * 50;
+    const x = radius * Math.cos(angle)
+    const y = radius * Math.sin(angle)
+    console.log(x, y)
+    return [x, y];
 });
 
 var delaunay = d3.Delaunay.from(vertices);
-const voronoi = delaunay.voronoi();
+const voronoi = delaunay.voronoi([-50, -50, 50, 50]);
 const polygons = Array.from(voronoi.cellPolygons());
 
 // console.log(polygons);
@@ -39,16 +46,12 @@ let mat = new THREE.LineBasicMaterial()
 polygons.map(poly => {
     let points = []
     poly.map(ver => {
-        console.log(ver[0])
-        points.push(new THREE.Vector3(ver[0], 0, ver[1]))
+        if ((ver[0] < 50 && ver[0] > -50) && (ver[1] < 50 && ver[1] > -50)) points.push(new THREE.Vector3(ver[0], 0, ver[1]))
     })
-    console.log(points)
-    const geometry = new THREE.BufferGeometry().setFromPoints( points );
-    const line = new THREE.Line( geometry, mat );
-
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const line = new THREE.Line(geometry, mat);
     scene.add(line)
 })
-
 
 // geom.vertices.push(v1);
 // geom.vertices.push(v2);
@@ -64,10 +67,10 @@ polygons.map(poly => {
 // ACTUAL CODE
 // ----------------------------------------------------------------
 
-const shape = new THREE.BoxGeometry(1, 1)
-const material = new THREE.MeshBasicMaterial({ color: 0xffffff })
-const mesh = new THREE.Mesh(shape, material)
-scene.add(mesh)
+// const shape = new THREE.BoxGeometry(1, 1)
+// const material = new THREE.MeshBasicMaterial({ color: 0xffffff })
+// const mesh = new THREE.Mesh(shape, material)
+// scene.add(mesh)
 
 // ----------------------------------------------------------------
 
